@@ -1,6 +1,16 @@
 <html>
 
+
 <head>
+
+ 
+
+ <style>
+
+ html, body { padding:0; margin:0; }
+
+ </style>
+
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 
@@ -22,6 +32,7 @@ $(document).ready(function(){
 
 
  var counter = 0;
+ 
 
 
  function animate(){
@@ -30,7 +41,7 @@ $(document).ready(function(){
  counter = counter + .1;
 
 
- context.fillStyle = "rgb(0,0,0)";
+ context.fillStyle = "rgb(0,50,0)";
 
  context.fillRect(0,0, canvas.width(), canvas.height());
 
@@ -39,12 +50,12 @@ $(document).ready(function(){
 
  
 
- context.translate(100 + (200 * Math.cos(counter)), 100);
+ context.translate(100, 100);
 
- context.rotate(Math.sin(counter));
+ context.rotate(counter);
 
 
- var scaler =  (Math.cos(counter/2)) + 1;
+ var scaler =  counter + 1;
 
  context.scale(scaler, scaler);
 
@@ -52,7 +63,7 @@ $(document).ready(function(){
 
  context.beginPath();
 
- context.moveTo(20, 20 + (100 * Math.sin(counter)));
+ context.moveTo(20, 20 + 30);
 
  context.lineTo(0, 100);
 
@@ -120,17 +131,22 @@ $(document).ready(function(){
 
  var tmpArea = 200 * Math.random();
 
+
  objs.push( new Object(tmpX, tmpY, tmpSize, tmpCounter, tmpCounterRate, tmpArea)  );
 
  }
 
- var user = new Object(canvas.width()/2, canvas.height()/2, 20, 0, 0, 0);
  
+
  
+
+ var user = new Object(canvas.width()/2, canvas.height()/2, 40, 40, 1, 34);
+ 
+
 
  function animate2(){
 
- context.fillStyle = "rgb(0,0,0)";
+ context.fillStyle = "rgb(0,50,0)";
 
  context.fillRect(0,0, canvas.width(), canvas.height()); 
 
@@ -138,18 +154,46 @@ $(document).ready(function(){
  context.fillStyle = "rgb(100, 255, 0)";
 
  for(var i=0; i<objs.length; i++){
-	 
-	 if((user.x < (objs[i].x+objs[i].w)) || (user.x+user.x) > objs[i].x ){
-//user and i overlaps
-		 
- 
-}
 
-else{
-	
-    objs[i].counter = objs[i].counter + objs[i].counterRate;
-	
-}
+ 
+
+ var xCheck = true;
+
+ var yCheck = true;
+
+ var alteredX = objs[i].x +    ( objs[i].area * Math.sin(objs[i].counter) );
+
+ if(user.x > (alteredX + objs[i].w)   ||   alteredX > (user.x + user.w)  ){
+
+ xCheck = false;
+
+ }
+
+ if(user.y > (objs[i].y + objs[i].w)    ||   objs[i].y > (user.y + user.w)   ){
+
+ yCheck = false;
+
+ }
+
+ 
+
+ if(xCheck && yCheck ){
+
+ 
+ context.rotate(.001)
+	 context.fillStyle = "rgb(255,0,0)"
+
+ // console.log("overlap!!!!!!!");
+
+ }else{
+
+ // if user and objs i DO NOT overlap
+
+ objs[i].counter = objs[i].counter + objs[i].counterRate; 
+
+ }
+
+ 
 
  //console.log(objs[i].area);
 
@@ -158,64 +202,134 @@ else{
  context.translate( objs[i].area * Math.sin(objs[i].counter)  , 0);
 
  context.fillRect(objs[i].x, objs[i].y, objs[i].w, objs[i].w);
- 
- 
 
  context.restore();
 
  }
 
- context.fillRect(user[i].x, user[i].y, user[i].w, user[i].w);
+
+
+ context.fillStyle = "rgb(255, 255, 255)";
+
+ 
+
+ context.fillRect(user.x, user.y, user.w, user.w);
+
+ 
+
+ 
 
 
  requestAnimationFrame(animate2);
 
  }
 
+
  animate2();
 
+ 
+
+ 
+
+ 
+
  $(window).keydown(function(e){
- 	
-	 console.log("keypressed!");
-	 var keyCode = e.keyCode;
-	 if (keyCode == 37) //left arrow
-	 {
-		 user.x -= 3;
-	 }
-	 else if (keyCode == 38){ //up arrow
-	 	
-		 user.y -= 3;
-	 }
-	 else if (keyCode == 39){ //right arrow
-	 	user.x += 6
-		
-	 }
-	 else if (keyCode == 40) { // down arrow
-	 	user.x += 6
-		
-	 }
+
+ 
+
+ // console.log(e.keyCode);
+
+ var keycode = e.keyCode;
+
+ 
+
+ if(keycode == 37) // left arrow key
+
+ {
+
+ user.x -= 6;
+
+ if(user.x <0){ user.x = 0;}
+
+ }else if(keycode == 38){ //up arrow key
+
+ user.y -= 6;
+
+ if(user.y <0){ user.y = 0;}
+
+ }
+
+ else if(keycode == 39){ //right arrow key
+
+ user.x += 6;
+
+ if(user.x+user.w >canvas.width()){ user.x = canvas.width() - user.w;}
+
+
+ }else if(keycode ==40){ //down arrow key
+
+ user.y += 6;
+
+ if(user.y+user.w >canvas.height()){ user.y = canvas.height() - user.w;}
+
+ 
+
+ }
+
+ 
+
+
+ 
+
  });
 
-$("#myCanvas").bind( "click", function(){
-	
-	var x = event.pageX;
-	var y = event.pageY;
-	console.log(x + " " + y)
-	user.x = x - user.w/2;
-	user.y = y - user.w/2;
-	
-});
+ 
+
+ 
+
+ $("#myCanvas").bind( "click", function(){
+
+ var x = event.pageX;
+
+ var y = event.pageY;
+
+ //console.log(x + "    " + y);
+
+ user.x = x - (user.w/2);
+
+ user.y = y - (user.w/2);
+ 
+ userRed = 0;
+ 
+ userGreen = 40;
+ 
+ userBlue = 255;
+
+ 
+
+ 
+
+ });
+
 
 });
+
+
+
 
 </script>
 
 
+
 </head>
+
 
 <body>
 
+
 <canvas id="myCanvas"  width="500" height="500" ></canvas>
+
+
 
 </body>
 
