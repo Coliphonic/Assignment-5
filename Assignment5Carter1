@@ -146,12 +146,12 @@ $(document).ready(function(){
 
  function animate2(){
 
- context.fillStyle = "rgb(0,50,0)";
+ context.fillStyle = "rgb(0,175,250)";
 
  context.fillRect(0,0, canvas.width(), canvas.height()); 
 
 
- context.fillStyle = "rgb(100, 255, 0)";
+ context.fillStyle = "rgb(0, 100, 255)";
 
  for(var i=0; i<objs.length; i++){
 
@@ -199,16 +199,18 @@ $(document).ready(function(){
 
  context.save();
 
- context.translate( objs[i].area * Math.sin(objs[i].counter)  , 0);
+ context.translate( objs[i].area * .1*(objs[i].counter)  , 0);
 
  context.fillRect(objs[i].x, objs[i].y, objs[i].w, objs[i].w);
 
  context.restore();
+ 
+ 
 
  }
 
 
-
+ context.stroke = 5;
  context.fillStyle = "rgb(255, 255, 255)";
 
  
